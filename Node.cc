@@ -1,5 +1,6 @@
 #include "Node.h"
 #include "Song.h"
+#include <fstream>
 #include <iostream>
 #include <string>
 
@@ -7,9 +8,10 @@ using std::ostream;
 using std::cin;
 using std::endl;
 using std::cout;
+using std::ofstream;
 
 // helper function declarations
-static void printRankingsHelper(Node* n, int* starting);
+static void printRankingsHelper(Node* n, int* starting, ofstream* f);
 
 // function definitions
 
@@ -68,7 +70,8 @@ int Node::compareto(Song& b) {
   int choice;
   
   while (1) {
-    cout << "Answer 1 or 2 (0 or a letter to exit): ";
+    // cout << "Answer 1 or 2 (0 or a letter to exit): ";
+    cout << "Answer: ";
     cin >> choice;
     if (choice == 1) {
       return 1;
@@ -87,15 +90,18 @@ int Node::compareto(Song& b) {
 void printRankings(Node& n) {
   int* ranking = new int;
   *ranking = 1;
-  printRankingsHelper(&n, ranking);
+  ofstream* output_file = new ofstream;
+  output_file->open("output.txt");
+  printRankingsHelper(&n, ranking, output_file);
   delete ranking;
+  output_file->close();
 }
 
-static void printRankingsHelper(Node* n, int* starting) {
+static void printRankingsHelper(Node* n, int* starting, ofstream* f) {
   if (n != NULL) {
-    printRankingsHelper(n->get_left(), starting);
-    cout << *starting << ". " << *n->get_song() << endl;
+    printRankingsHelper(n->get_left(), starting, f);
+    *f << *starting << ". " << *n->get_song() << "\n";
     *starting += 1;
-    printRankingsHelper(n->get_right(), starting);
+    printRankingsHelper(n->get_right(), starting, f);
   }
 }

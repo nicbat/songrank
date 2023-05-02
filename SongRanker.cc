@@ -38,14 +38,18 @@ int main(int argc, char** argv) {
 
   // std::cout << "-----------------------" << std::endl;
 
+  std::cout << "Warning: Answering any of the following questions will overwrite the rankings in output.txt" << std::endl;
+  std::cout << "For the following questions, answer 1 or 2 (0 or a letter to exit)." << std::endl;
   Node* first = new Node(songs[0]);
   bool result;
-  for (int i = 1; i < 190; i++) {
+  int i;
+  for (i = 1; i < 190; i++) {
     result = first->insert(songs[i]);
     if (!result) {
       break;
     }
   }
-  printRankings(*first);
-  cin << ""
+  if (i > 1) {
+    printRankings(*first);
+  }
 }
