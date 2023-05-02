@@ -3,16 +3,22 @@ CXX = g++
 
 all: SongRanker
 
-SongRanker: SongRanker.o Node.o Song.o
-	$(CXX) -Wall -g -std=c++17 -o SongRanker SongRanker.o Node.o Song.o
+SongRanker: SongRanker.o LinkedList.o ListNode.o TreeNode.o Song.o
+	$(CXX) -static -Wall -g -std=c++17 -o SongRanker LinkedList.o ListNode.o SongRanker.o TreeNode.o Song.o
 
-Node.o: Node.cc Node.h Song.h
-	$(CXX) -Wall -g -std=c++17 -c Node.cc
+LinkedList.o: LinkedList.cc ListNode.h Song.h LinkedList.h
+	$(CXX) -Wall -g -std=c++17 -c LinkedList.cc
+
+ListNode.o: ListNode.cc ListNode.h Song.h
+	$(CXX) -Wall -g -std=c++17 -c ListNode.cc
+
+TreeNode.o: TreeNode.cc TreeNode.h Song.h
+	$(CXX) -Wall -g -std=c++17 -c TreeNode.cc
 
 Song.o: Song.cc Song.h
 	$(CXX) -Wall -g -std=c++17 -c Song.cc
 
-SongRanker.o: SongRanker.cc Node.h Song.h
+SongRanker.o: SongRanker.cc TreeNode.h Song.h
 	$(CXX) -Wall -g -std=c++17 -c SongRanker.cc
 
 clean:

@@ -1,4 +1,4 @@
-#include "Node.h"
+#include "TreeNode.h"
 #include "Song.h"
 #include <fstream>
 #include <iostream>
@@ -11,18 +11,18 @@ using std::cout;
 using std::ofstream;
 
 // helper function declarations
-static void printRankingsHelper(Node* n, int* starting, ofstream* f);
+static void printRankingsHelper(TreeNode* n, int* starting, ofstream* f);
 
 // function definitions
 
-Node::Node() {
+TreeNode::TreeNode() {
   song_ = NULL;
   left_ = NULL;
   right_ = NULL;
   height_ = 0;
 }
 
-Node::Node(Song& song) {
+TreeNode::TreeNode(Song& song) {
   song_ = new Song;
   *song_ = song;
   left_ = NULL;
@@ -30,7 +30,7 @@ Node::Node(Song& song) {
   height_ = 0;
 }
 
-Node::Node(Song& song, Node& left, Node& right) {
+TreeNode::TreeNode(Song& song, TreeNode& left, TreeNode& right) {
   song_ = new Song;
   *song_ = song;
   left_ = &left;
@@ -38,32 +38,41 @@ Node::Node(Song& song, Node& left, Node& right) {
   height_ = 0;
 }
 
-Node::~Node() { 
+TreeNode::TreeNode(TreeNode& node) {
+  song_ = node.get_song();
+  left_ = node.get_left();
+  right_ = node.get_right();
+  height_ = node.get_height();
+}
+
+TreeNode::~TreeNode() { 
   delete song_;
 }
 
-bool Node::insert(Song& song) {
+int TreeNode::insert(Song& song) {
   int result = compareto(song);
   if (result == 0) {
-    return false;
+    return 0;
   }
   if (result == 1) {
     if (right_ == NULL) {
-      right_ = new Node(song);
+      right_ = new TreeNode(song);
     } else {
       return right_->insert(song);
     }
-  } else {
+  } else if (result == 2) {
     if (left_ == NULL) {
-      left_ = new Node(song);
+      left_ = new TreeNode(song);
     } else {
       return left_->insert(song);
     }
+  } else {
+    return -1;
   }
-  return true;
+  return 1;
 }
 
-int Node::compareto(Song& b) {
+int TreeNode::compareto(Song& b) {
   cout << *get_song();
   cout << " or ";
   cout << b << endl;
@@ -76,28 +85,27 @@ int Node::compareto(Song& b) {
     if (choice == 1) {
       return 1;
     } else if (choice == 2) {
-      return -1;
+      return 2;
     } else if (choice == 0){
       return 0;
+    } else if (choice == 3) {
+      return 3;
     }
   }
 }
 
-// ostream& operator<<(std::ostream& os, Node& n) {
+// ostream& operator<<(std::ostream& os, TreeNode& n) {
 //   
 // }
 
-void printRankings(Node& n) {
+void printRankings(TreeNode& n, ofstream* f) {
   int* ranking = new int;
   *ranking = 1;
-  ofstream* output_file = new ofstream;
-  output_file->open("output.txt");
-  printRankingsHelper(&n, ranking, output_file);
+  printRankingsHelper(&n, ranking, f);
   delete ranking;
-  output_file->close();
 }
 
-static void printRankingsHelper(Node* n, int* starting, ofstream* f) {
+static void printRankingsHelper(TreeNode* n, int* starting, ofstream* f) {
   if (n != NULL) {
     printRankingsHelper(n->get_left(), starting, f);
     *f << *starting << ". " << *n->get_song() << "\n";

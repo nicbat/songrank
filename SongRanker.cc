@@ -1,11 +1,14 @@
+#include "LinkedList.h"
 #include "Song.h"
-#include "Node.h"
+#include "TreeNode.h"
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <limits>
 
+void printResults(TreeNode* node, LinkedList* list);
 
 int main(int argc, char** argv) {
   // Song* songs = new Song[5];
@@ -39,17 +42,58 @@ int main(int argc, char** argv) {
   // std::cout << "-----------------------" << std::endl;
 
   std::cout << "Warning: Answering any of the following questions will overwrite the rankings in output.txt" << std::endl;
-  std::cout << "For the following questions, answer 1 or 2 (0 or a letter to exit)." << std::endl;
-  Node* first = new Node(songs[0]);
-  bool result;
-  int i;
-  for (i = 1; i < 190; i++) {
-    result = first->insert(songs[i]);
-    if (!result) {
-      break;
+  int i = 0;
+  int result;
+  TreeNode* first;
+  LinkedList* list = new LinkedList();
+  while (i < 190) {
+    std::cout << "Do you know this song? (1 for yes, anything else for no): " << songs[i] << std::endl;
+    std::cout << "Answer: ";
+    std::cin >> result;
+    if (std::cin.fail()) {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      result = 0;
     }
+    // std::cout << std::endl;
+    if (result == 1) {
+      first = new TreeNode(songs[i]);
+      i++;
+      break;
+    } else {
+      list->append(songs[i]);
+      result = 0;
+    }
+    i++;
+  }
+  if (i < 190) {
+    std::cout << "----------------------------" << std::endl;
+    std::cout << "For the following questions, answer 1 or 2 (0 or a letter to exit, 3 for don't know)." << std::endl;
+  }
+  while (i < 190) {
+    result = first->insert(songs[i]);
+    if (result == 0) {
+      break;
+    } else if (result == -1) {
+      // add to don't know list
+      list->append(songs[i]);
+    }
+    if (i % 10 == 0) {
+      printResults(first, list);
+    }
+    i++;
   }
   if (i > 1) {
-    printRankings(*first);
+    printResults(first, list);
   }
+}
+
+void printResults(TreeNode* node, LinkedList* list) {
+  std::ofstream* output_file = new std::ofstream;
+  output_file->open("output.txt");
+  printRankings(*node, output_file);
+  *output_file << "---------------\nUnknown Songs:\n";
+  list->printList(output_file);
+  output_file->close();
+  delete output_file;
 }
