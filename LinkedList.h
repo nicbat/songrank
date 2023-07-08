@@ -18,6 +18,8 @@ class LinkedList {
   void printList(std::ofstream* f);
 
   void append(Song& song);
+  void prepend(Song& song);
+  Song* remove_front();
 
  private:
   ListNode* front_;

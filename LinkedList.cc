@@ -36,6 +36,25 @@ void LinkedList::append(Song& song) {
   }
 }
 
+void LinkedList::prepend(Song& song) {
+  ListNode* node = new ListNode(song);
+  size_ += 1;
+  if (front_ == NULL) {
+    front_ = node;
+    back_ = node;
+  } else {
+    node->set_next(front_);
+    front_ = node;
+  }
+}
+
+Song* LinkedList::remove_front() {
+  size_ -= 1;
+  ListNode* node = front_;
+  front_ = node->get_next();
+  return node->get_song();
+}
+
 void LinkedList::printList(std::ofstream* f) {
   ListNode* curr = front_;
   int ranking = 1;

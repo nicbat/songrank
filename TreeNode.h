@@ -15,20 +15,28 @@ class TreeNode {
   ~TreeNode();
 
   // methods
-  int insert(Song& song);
+  // int insert(Song& song);
+  void updateHeight();
   
   // getters
   Song* get_song() { return song_; }
-  TreeNode* get_left() { return left_; }
-  TreeNode* get_right() { return right_; }
+  TreeNode* get_left() { return children[0]; }
+  TreeNode* get_right() { return children[1]; }
   int get_height() { return height_; }
+  int get_balance();
+  int get_childHeight(int child);
+  TreeNode* get_child(int child) { return children[child]; }
+  
+  // setters
+  void set_child(TreeNode* child, int lr) { children[lr] = child; }
   
   int compareto(Song& b);
 
  private:
   Song* song_;
-  TreeNode* left_;
-  TreeNode* right_;
+  // TreeNode* left_;
+  // TreeNode* right_;
+  TreeNode** children;
   int height_; // for avl nonsense later
 };
 
