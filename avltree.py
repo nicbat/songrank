@@ -16,29 +16,28 @@ class AVLNode:
     def getBalanceFactor(self):
         return self.getChildHeight(0) - self.getChildHeight(1)
 
+    def compareData(self, data):
+        answer = -1
+        while answer not in [0,1,2,3]:
+            print(str(self.data) + " or " + str(data) + ":")
+            answer = int(input())
+        return answer
+
 class AVLTree:
     def __init__(self):
         self.root = None
         self.size = 0
 
-    def printRankings(self):
-        ranking = 1
-        def printRankingsHelper(node):
+    def treeRankings(self):
+        def printRankingsHelper(node, output="", ranking=1):
             if node is not None:
-                printRankingsHelper(node.children[0])
-                print(ranking + ". " + str(node.data))
+                output, ranking = printRankingsHelper(node.children[0], output, ranking)
+                output += "\n" + str(ranking) + ". " + str(node.data)
                 ranking += 1
-                printRankingsHelper(node.children[1])
-        printRankingsHelper(self.root)
-
-    
-    
-    def compareData(self, data):
-        print(self.data + " or " + data + ":")
-        answer = -1
-        while answer is not 1 or answer is not 2 or answer is not 3 or answer is not 0:
-            answer = input()
-        return answer
+                output, ranking = printRankingsHelper(node.children[1], output, ranking)
+            return output, ranking
+        output, ranking = printRankingsHelper(self.root)
+        return output
 
     def rotateLeft(self, node):
         left = node.children[0]
@@ -81,8 +80,8 @@ class AVLTree:
         current = self.root
         prev = None
         while current is not None:
-            direction = self.compareData(newdata)
-            if direction is 0 or direction is 3:
+            direction = current.compareData(newdata)
+            if direction == 0 or direction == 3:
                 # cancel the insertion
                 return direction
             child = direction - 1
@@ -95,7 +94,7 @@ class AVLTree:
         if self.root is None:
             self.root = current
         else:
-            prev.cihldren[child] = current
+            prev.children[child] = current
             prev.updateHeight()
             self.size += 1
         
